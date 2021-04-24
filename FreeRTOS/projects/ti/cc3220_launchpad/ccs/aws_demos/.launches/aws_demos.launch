@@ -4,7 +4,7 @@
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROGRAM.CC3220SF.ccxml.Texas Instruments XDS110 USB Debug Probe_0/Cortex_M4_0" value="${build_artifact:aws_demos}"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.CC3220SF.ccxml.Texas Instruments XDS110 USB Debug Probe_0/Cortex_M4_0" value="aws_demos"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:aws_demos}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.CC3220SF.ccxml.Texas Instruments XDS110 USB Debug Probe_0/Cortex_M4_0" value="C:\TI\Workspace10\freertos-1619024763397\FreeRTOS\projects\ti\cc3220_launchpad\ccs\aws_demos\Debug\aws_demos.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.CC3220SF.ccxml.Texas Instruments XDS110 USB Debug Probe_0/Cortex_M4_0" value="C:\Users\Kaikai Liu\Documents\MyRepo\TICC32xxAWSFreeRTOS\FreeRTOS\projects\ti\cc3220_launchpad\ccs\aws_demos\Debug\aws_demos.out"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/aws_demos"/>
 </listAttribute>
