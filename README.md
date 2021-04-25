@@ -55,7 +55,29 @@ Only a single FreeRTOS demo application can run at a time. When we build a FreeR
 Open demos/include/aws_clientcredential.h. Specify values for the following constants:
 #define clientcredentialMQTT_BROKER_ENDPOINT "Your AWS IoT endpoint";
 #define clientcredentialIOT_THING_NAME
+You also can copy the aws_clientcredential.h in your downloaded Credential folder (contains the private/public key, certificate, aws_clientcredential and aws_clientcredential_keys c header files)
 ![image](https://user-images.githubusercontent.com/6676586/115984345-86f8ee80-a55b-11eb-9718-4d3e6b135d80.png)
+
+You also need to add your WiFi access point and password in the aws_clientcredential.h
+![image](https://user-images.githubusercontent.com/6676586/115984429-df2ff080-a55b-11eb-817d-e27e6f936f75.png)
+
+FreeRTOS needs the AWS IoT certificate and private keys associated with your registered thing and its permissions policies to successfully communicate with AWS IoT on behalf of your device. FreeRTOS is a C language project, and the certificate and private key must be specially formatted to be added to the project.
+Open aws_clientcredential_keys in your downloaded Credential folder (contains the private/public key, certificate, aws_clientcredential and aws_clientcredential_keys c header files) and replace the aws_clientcredential_keys.h under demos/include/aws_clientcredential_keys.h. This file contains the #define keyCLIENT_CERTIFICATE_PEM term and #define keyCLIENT_PRIVATE_KEY_PEM. 
+
+You also can generate the #define strings via the tools in tools/certificate_configuration/CertificateConfigurator.html. Under Certificate PEM file, choose the ID-certificate.pem.crt that you downloaded from the AWS IoT console. Under Private Key PEM file, choose the ID-private.pem.key that you downloaded from the AWS IoT console. Choose Generate and save aws_clientcredential_keys.h, and then save the file in demos/include. This overwrites the existing file in the directory.
+
+The demo application is in demos/coreMQTT/mqtt_demo_mutual_auth.c, you can change the topic name and message in this file
+![image](https://user-images.githubusercontent.com/6676586/115984672-31254600-a55d-11eb-9bf4-bc12ca0b1013.png)
+
+You can now click build and debug to download the code to the hardware board. You can open the terminal window to see the output of the code. Click View->Terminal, click the first icon in the Terminal window to launch terminal.
+![image](https://user-images.githubusercontent.com/6676586/115984753-9711cd80-a55d-11eb-9ee8-9f5dbcecb99a.png)
+
+The output of the terminal will show the wifi connection and MQTT data publish
+![image](https://user-images.githubusercontent.com/6676586/115984848-fbcd2800-a55d-11eb-85e1-61d99a56a821.png)
+
+You can subscribe the MQTT topic in AWS IoT Test window, and see the received data
+![image](https://user-images.githubusercontent.com/6676586/115984880-0daecb00-a55e-11eb-82dd-d5a73c4bdb77.png)
+
 
 
 
