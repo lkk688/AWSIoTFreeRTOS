@@ -48,6 +48,14 @@ If you created the things and credentials, you will also download a Credential f
 Open TI Code Composer, and choose OK to accept the default workspace name. On the Getting Started page, choose Import Project. In Select search-directory, enter your downloaded AWS FreeRTOS project path, and select subfolders of projects/ti/cc3220_launchpad/ccs/aws_demos. The project aws_demos should be selected by default. To import the project into TI Code Composer, choose Finish.
 ![image](https://user-images.githubusercontent.com/6676586/115984141-654b3780-a55a-11eb-9a48-c654883ed229.png)
 
+Only a single FreeRTOS demo application can run at a time. When we build a FreeRTOS demo project, the first demo enabled in the freertos/vendors/vendor/boards/board/aws_demos/config_files/aws_demo_config.h header file is the application that runs. The demo application in this tutorial is the coreMQTT Mutual Authentication demo defined in the freertos/demos/coreMQTT/mqtt_demo_mutual_auth.c file. It uses the coreMQTT library to connect to the AWS Cloud and then periodically publish messages to an MQTT topic hosted by the AWS IoT MQTT broker. You can also change the default application in [aws_demo_config.h](/config_files/aws_demo_config.h)
+![image](https://user-images.githubusercontent.com/6676586/115984280-14880e80-a55b-11eb-9967-5db5f3155bae.png)
+
+### Configuring the FreeRTOS demos
+Open demos/include/aws_clientcredential.h. Specify values for the following constants:
+#define clientcredentialMQTT_BROKER_ENDPOINT "Your AWS IoT endpoint";
+#define clientcredentialIOT_THING_NAME
+![image](https://user-images.githubusercontent.com/6676586/115984345-86f8ee80-a55b-11eb-9718-4d3e6b135d80.png)
 
 
 
