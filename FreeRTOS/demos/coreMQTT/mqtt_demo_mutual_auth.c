@@ -1086,7 +1086,6 @@ static BaseType_t prvMQTTPublishToTopic( MQTTContext_t * pxMQTTContext )
     snprintf(cDataBuffer, sizeof( cDataBuffer), "{\"message\":\" %s \",\"temp\":%f, \"count\":%d}", mqttexampleMESSAGE, temp, ( int ) xMessageNumber);
     xMessageNumber ++;
 
-
     /* This demo uses QoS1. */
     xMQTTPublishInfo.qos = MQTTQoS1;
     xMQTTPublishInfo.retain = false;
@@ -1234,6 +1233,19 @@ static void prvMQTTProcessIncomingPublish( MQTTPublishInfo_t * pxPublishInfo )
                    pxPublishInfo->pTopicName,
                    pxPublishInfo->payloadLength,
                    pxPublishInfo->pPayload ) );
+
+        char cBuffer[ 100 ];
+        memset( cBuffer, 0x00, sizeof( cBuffer ) );
+                 memcpy( cBuffer, pxPublishInfo->pPayload, ( size_t ) pxPublishInfo->payloadLength );
+        configPRINTF( (cBuffer) );
+        if (strcmp(cBuffer, "turnOff") == 0) {
+            vTaskSuspend(xTempReadHandle);
+            configPRINTF( ("suspending temperature reading\r\n") );
+        }
+        else if (strcmp(cBuffer, "turnOn") == 0) {
+            vTaskResume(xTempReadHandle);
+            configPRINTF( ("resuming temperature reading\r\n") );
+        }
     }
     else
     {
