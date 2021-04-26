@@ -78,7 +78,42 @@ The output of the terminal will show the wifi connection and MQTT data publish
 You can subscribe the MQTT topic in AWS IoT Test window, and see the received data
 ![image](https://user-images.githubusercontent.com/6676586/115984880-0daecb00-a55e-11eb-82dd-d5a73c4bdb77.png)
 
+### Add additional task in FreeRTOS demos to read onboard temperature sensor and blink the LED
+Add code in line 447-544 of demos/coreMQTT/mqtt_demo_mutual_auth.c, then start the two tasks in RunCoreMqttMutualAuthDemo (line 574-585)
+```bash
+I2C_init();
+xTaskCreate(vGreenTurnOn, "GLED", 512, NULL, 2, NULL);
 
+xMQTTTaskParameter taskParameter_temperature;
+memset( taskParameter_temperature.topic, 0x00, sizeof( taskParameter_temperature.topic ) );
+snprintf( taskParameter_temperature.topic, sizeof( taskParameter_temperature.topic ), "%s%s", mqttexampleTOPIC, "sensor");
+xTaskCreate( prvTempSensorReaderTask,
+                                   "TMP006",
+                                   TEMP_TASK_STACK_SIZE,
+                                   ( void * ) &taskParameter_temperature,
+                                   TEMP_TASK_PRIORITY,
+                                   &xTempReadHandle );
+```
+
+Add code in function prvMQTTPublishToTopic to read temperature data and put into the json string
+```bash
+snprintf(cDataBuffer, sizeof( cDataBuffer), "{\"message\":\" %s \",\"temp\":%f, \"count\":%d}", mqttexampleMESSAGE, temp, ( int ) xMessageNumber);
+xMessageNumber ++;
+
+/* This demo uses QoS1. */
+xMQTTPublishInfo.qos = MQTTQoS1;
+xMQTTPublishInfo.retain = false;
+xMQTTPublishInfo.pTopicName = mqttexampleTOPIC;
+xMQTTPublishInfo.topicNameLength = ( uint16_t ) strlen( mqttexampleTOPIC );
+xMQTTPublishInfo.pPayload = cDataBuffer;//mqttexampleMESSAGE;
+xMQTTPublishInfo.payloadLength = strlen(cDataBuffer);//strlen( mqttexampleMESSAGE );
+
+/* Get a unique packet id. */
+usPublishPacketIdentifier = MQTT_GetPacketId( pxMQTTContext );
+
+/* Send PUBLISH packet. Packet ID is not used for a QoS1 publish. */
+xResult = MQTT_Publish( pxMQTTContext, &xMQTTPublishInfo, usPublishPacketIdentifier );
+```
 
 
 
