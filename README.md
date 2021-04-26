@@ -66,7 +66,7 @@ Open aws_clientcredential_keys in your downloaded Credential folder (contains th
 
 You also can generate the #define strings via the tools in tools/certificate_configuration/CertificateConfigurator.html. Under Certificate PEM file, choose the ID-certificate.pem.crt that you downloaded from the AWS IoT console. Under Private Key PEM file, choose the ID-private.pem.key that you downloaded from the AWS IoT console. Choose Generate and save aws_clientcredential_keys.h, and then save the file in demos/include. This overwrites the existing file in the directory.
 
-The demo application is in demos/coreMQTT/mqtt_demo_mutual_auth.c, you can change the topic name and message in this file
+The demo application is in demos/coreMQTT/mqtt_demo_mutual_auth.c, you can change the topic name and message in this file. For example, the topic name is "TIIoT2021a/example/topic"
 ![image](https://user-images.githubusercontent.com/6676586/115984672-31254600-a55d-11eb-9bf4-bc12ca0b1013.png)
 
 You can now click build and debug to download the code to the hardware board. You can open the terminal window to see the output of the code. Click View->Terminal, click the first icon in the Terminal window to launch terminal.
@@ -115,6 +115,42 @@ usPublishPacketIdentifier = MQTT_GetPacketId( pxMQTTContext );
 xResult = MQTT_Publish( pxMQTTContext, &xMQTTPublishInfo, usPublishPacketIdentifier );
 ```
 
+Received publish message from AWS IoT console.
+```bash
+724 59456 [iot_thread] [INFO] [MQTT_MutualAuth_Demo] [mqtt_demo_mutual_auth.c:1235] 725 59456 [iot_thread] Incoming Publish Topic Name: TIIoT2021a/example/topic matches subscribed topic.Incoming Publish Message : {
+                      "message": "Hello from AWS IoT console"
+                                                             }
+```
+The subscription code is in function prvMQTTProcessIncomingPublish
+```bash
+static void prvMQTTProcessIncomingPublish( MQTTPublishInfo_t * pxPublishInfo )
+{
+    configASSERT( pxPublishInfo != NULL );
 
+    /* Set the global for indicating that an incoming publish is received. */
+    usPacketTypeReceived = MQTT_PACKET_TYPE_PUBLISH;
+
+    /* Process incoming Publish. */
+    LogInfo( ( "Incoming QoS : %d\n", pxPublishInfo->qos ) );
+
+    /* Verify the received publish is for the we have subscribed to. */
+    if( ( pxPublishInfo->topicNameLength == strlen( mqttexampleTOPIC ) ) &&
+        ( 0 == strncmp( mqttexampleTOPIC, pxPublishInfo->pTopicName, pxPublishInfo->topicNameLength ) ) )
+    {
+        LogInfo( ( "Incoming Publish Topic Name: %.*s matches subscribed topic."
+                   "Incoming Publish Message : %.*s",
+                   pxPublishInfo->topicNameLength,
+                   pxPublishInfo->pTopicName,
+                   pxPublishInfo->payloadLength,
+                   pxPublishInfo->pPayload ) );
+    }
+    else
+    {
+        LogInfo( ( "Incoming Publish Topic Name: %.*s does not match subscribed topic.",
+                   pxPublishInfo->topicNameLength,
+                   pxPublishInfo->pTopicName ) );
+    }
+}
+```
 
 
