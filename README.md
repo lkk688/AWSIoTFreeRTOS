@@ -6,9 +6,13 @@
  
  ## IoT Lambda Backend
  [IoTLambda.py](/Serverless/IoTLambda.py) is the python code that deployed to AWS lambda that can be triggered by AWS IoT message.
- ![image](https://user-images.githubusercontent.com/6676586/116440937-d3675700-a805-11eb-9267-e3960fe3381b.png)
+ 
+ You can add the AWS IoT Core as the trigger
+ ![image](https://user-images.githubusercontent.com/6676586/116441887-baab7100-a806-11eb-9b2c-071e0da40cc2.png)
 
-This lambda function inserts IoT data into dynamodb, update the item in the dynamodb by converting Fahrenheit to Celsius, Send to SNS notification, and publish data back to the IoT device.
+ 
+ This lambda function inserts IoT data into dynamodb, update the item in the dynamodb by converting Fahrenheit to Celsius, Send to SNS notification, and publish data back to the IoT device.
+ ![image](https://user-images.githubusercontent.com/6676586/116440937-d3675700-a805-11eb-9267-e3960fe3381b.png)
 
 You can send a json data to test this lambda function, for example, the json data is
 ```bash
@@ -19,8 +23,74 @@ You can send a json data to test this lambda function, for example, the json dat
 }
 ```
 
- ## API Gateway with Lambda Backend
+To trigger the Lambda function via IoT devices, you need to add this Lambda action in IoT Rules
+![image](https://user-images.githubusercontent.com/6676586/116442067-ec243c80-a806-11eb-9649-e0171dd2be80.png)
 
+When you send the data in the AWS IoT side, you can see the log of the Lambda function
+![image](https://user-images.githubusercontent.com/6676586/116442182-0e1dbf00-a807-11eb-99f6-8c3082539d24.png)
+
+
+
+
+ ## API Gateway REST API with Lambda Backend
+Amazon API Gateway is an AWS service for creating, publishing, maintaining, monitoring, and securing REST, HTTP, and WebSocket APIs at any scale. The APIs created with Amazon API Gateway expose HTTPS endpoints only. API Gateway doesn't support unencrypted (HTTP) endpoints.
+
+You can create a REST API with Lambda integrations in Amazon API Gateway. In a Lambda integration, the HTTP method request from the client is mapped to a backend Lambda function invocation. In a Lambda proxy integration, the entire client request is sent to the backend Lambda function as is, except that the order of the request parameters isn't preserved. In a Lambda non-proxy integration (also called a "custom integration"), you configure the way the parameters, headers, and body of the client's request are translated into the format that your backend Lambda function requires.
+
+[CMPE181JSAPI.js](/Serverless/CMPE181JSAPI.js) is the lambda function that can be trigger by API Gateway
+![image](https://user-images.githubusercontent.com/6676586/116443924-1545cc80-a809-11eb-89b1-e698f5cf5794.png)
+
+You can test the lambda function via Test event data
+```bash
+{
+  "httpMethod": "POST",
+  "isBase64Encoded": false,
+  "headers": {
+    "content-type": "application/json",
+    "headerdata": "testheader"
+  },
+  "thingType": "test",
+  "queryStringParameters": {
+    "deviceID": "httpdevice1010",
+    "thingType": "web"
+  },
+  "body": "{ \"sensorData\" : { \"temperature\" : \"60\", \"batteryVoltage\" : \"2000mV\" }}"
+}
+```
+![image](https://user-images.githubusercontent.com/6676586/116444522-a9b02f00-a809-11eb-98a5-d83ee6c99742.png)
+
+After the test, you can see the data has been saved in the DynamoDB
+![image](https://user-images.githubusercontent.com/6676586/116444580-b7fe4b00-a809-11eb-8bb8-993181cb8a08.png)
+
+
+### API Gateway REST API setup
+* You can create a API Gateway method first
+![image](https://user-images.githubusercontent.com/6676586/116444109-3f978a00-a809-11eb-97fb-84d7ffb3d893.png)
+
+* Create resource in API Gateway
+Choose the root resource (/) in the Resources tree. Choose Create Resource from the Actions dropdown menu.
+![image](https://user-images.githubusercontent.com/6676586/116444223-605fdf80-a809-11eb-93af-0738666fd086.png)
+
+* Leave Configure as proxy resource unchecked. For Resource Name, enter helloworld. Leave Resource Path set to /helloworld. Leave Enable API Gateway CORS unchecked. Choose Create Resource
+![image](https://user-images.githubusercontent.com/6676586/116444331-78cffa00-a809-11eb-8f25-434cbb7bb96d.png)
+
+* In a proxy integration, the entire request is sent to the backend Lambda function as-is, via a catch-all ANY method that represents any HTTP method. In the Resources list, choose /helloworld. In the Actions menu, choose Create method. Choose ANY from the dropdown menu
+![image](https://user-images.githubusercontent.com/6676586/116444809-fb58b980-a809-11eb-955c-4e5bfd8fd79a.png)
+
+* As shown in the above figure, leave the Integration type set to Lambda Function. Choose Use Lambda Proxy integration. Set region and type the Lambda Function: CMPE181JSAPI
+
+* Deploy and test the API. Choose Deploy API from the Actions dropdown menu. For Deployment stage, choose [new stage]. For Stage name, enter test1. Choose Deploy.
+![image](https://user-images.githubusercontent.com/6676586/116444950-2a6f2b00-a80a-11eb-9081-64f5e6dd098a.png)
+
+* Note the API's Invoke URL in the Stages->test1 page
+![image](https://user-images.githubusercontent.com/6676586/116445112-5a1e3300-a80a-11eb-898d-62206055185b.png)
+
+You can test the API (GET POST) via Curl command or Postman:
+```bash
+curl -v -X GET 'https://mfee4dohad.execute-api.us-west-2.amazonaws.com/test1/helloworld?deviceID=webtest6&thingType=web'  -H 'content-type: application/json'  -H 'headerdata: Sunday'
+
+curl -v -X POST 'https://mfee4dohad.execute-api.us-west-2.amazonaws.com/test1/helloworld?deviceID=webnew2&thingType=web'  -H 'content-type: application/json'  -H 'headerdata: Sunday'  -d  '{ "sensorData" : { "temperature" : "70", "batteryVoltage" : "2000mV" },  "temperature" : { "temp" : "34" } }'
+```
  
  ## AWS FreeRTOS for TI CC32xx wifi board
  [FreeRTOS](/FreeRTOS) folder the AWS IoT FreeRTOS code for TI CC32xx wifi board. You can check my tutorial from this [link](https://kaikailiu.cmpe.sjsu.edu/iot/ti-cc3220-and-aws-freertos/). Amazon's tutorial is in [FreeRTOS Getting Started] (https://docs.aws.amazon.com/freertos/latest/userguide/freertos-getting-started.html) and [Getting Started TI](https://docs.aws.amazon.com/freertos/latest/userguide/getting_started_ti.html)
