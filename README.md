@@ -8,6 +8,7 @@
  [IoTLambda.py](/Serverless/IoTLambda.py) is the python code that deployed to AWS lambda that can be triggered by AWS IoT message.
  
  You can add the AWS IoT Core as the trigger
+ 
  ![image](https://user-images.githubusercontent.com/6676586/116441887-baab7100-a806-11eb-9b2c-071e0da40cc2.png)
 
  
