@@ -4,6 +4,24 @@
  ## Python Client
  [CMPE-AWSIoT.ipynb](/CMPE-AWSIoT.ipynb) is the AWS IoT python sdk example based on colab.
  
+ ## IoT Lambda Backend
+ [IoTLambda.py](/Serverless/IoTLambda.py) is the python code that deployed to AWS lambda that can be triggered by AWS IoT message.
+ ![image](https://user-images.githubusercontent.com/6676586/116440937-d3675700-a805-11eb-9267-e3960fe3381b.png)
+
+This lambda function inserts IoT data into dynamodb, update the item in the dynamodb by converting Fahrenheit to Celsius, Send to SNS notification, and publish data back to the IoT device.
+
+You can send a json data to test this lambda function, for example, the json data is
+```bash
+{
+  "deviceID": "abcdd2",
+  "batteryVoltage": "2000mV",
+  "temperature": "70"
+}
+```
+
+ ## API Gateway with Lambda Backend
+
+ 
  ## AWS FreeRTOS for TI CC32xx wifi board
  [FreeRTOS](/FreeRTOS) folder the AWS IoT FreeRTOS code for TI CC32xx wifi board. You can check my tutorial from this [link](https://kaikailiu.cmpe.sjsu.edu/iot/ti-cc3220-and-aws-freertos/). Amazon's tutorial is in [FreeRTOS Getting Started] (https://docs.aws.amazon.com/freertos/latest/userguide/freertos-getting-started.html) and [Getting Started TI](https://docs.aws.amazon.com/freertos/latest/userguide/getting_started_ti.html)
  
