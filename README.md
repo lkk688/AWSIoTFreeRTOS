@@ -24,14 +24,10 @@ You can send a json data to test this lambda function, for example, the json dat
 ```
 
 To trigger the Lambda function via IoT devices, you need to add this Lambda action in IoT Rules
-![image](https://user-images.githubusercontent.com/6676586/116442067-ec243c80-a806-11eb-9649-e0171dd2be80.png)
-
 ![image](https://user-images.githubusercontent.com/6676586/116446205-91411400-a80b-11eb-83a2-a7d07ab0204e.png)
 
 
 When you send the data in the AWS IoT side, you can see the log of the Lambda function
-![image](https://user-images.githubusercontent.com/6676586/116442182-0e1dbf00-a807-11eb-99f6-8c3082539d24.png)
-
 ![image](https://user-images.githubusercontent.com/6676586/116446094-78d0f980-a80b-11eb-96aa-1be273e26990.png)
 
 
